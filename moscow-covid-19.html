@@ -19,7 +19,6 @@
     <script type="text/javascript">
 
         $.getJSON("./json.json", function(res) {
-        
             navigator.geolocation.getCurrentPosition(function(pos) {
                 var crd = pos.coords;
 
@@ -45,11 +44,10 @@
                     });
                     
                     for(var i = 0; i < res.length; i++) {
-                        collection.add(new ymaps.Placemark([res.longitude, res.latitude], {
-                            balloonContent: res.address
+                        collection.add(new ymaps.Placemark([res[i].longitude, res[i].latitude], {
+                            balloonContent: res[i].address
                         }))
                     }
-                    console.log(collection)
                     myMap.geoObjects.add(collection)
                     // .add(new ymaps.Placemark([crd.latitude, crd.longitude], {
                     //     balloonContent: '<strong>greyish-brownish-maroon</strong> color'
