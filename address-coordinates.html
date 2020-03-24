@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="./config.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="result"></div>
+    <script>
+        var coordinates = [];
+        function getCoordinates(address) {
+            $.ajax({
+                method: "GET",
+                url: "https://geocode-maps.yandex.ru/1.x/?apikey="+config.apiKey+"&format=json&geocode="+address,
+                dataType: "jsonp"
+            })
+            .done(function( result ) {
+                if (result) {
+                    var geoObject = result.response.GeoObjectCollection.featureMember[0].GeoObject;
+                    var pos = geoObject.Point.pos;
+                    var posAry = pos.split(" ");
+                    item = {
+                        address: geoObject.metaDataProperty.GeocoderMetaData.text,
+                        longitude: parseFloat(posAry[1]),
+                        latitude: parseFloat(posAry[0])
+                    }
+                    coordinates.push(item)
+                }
+            });
+        }
+        // getCoordinates(config.addresses[0]);
+        for(var i = 0; i < config.addresses.length; i++) {
+            getCoordinates(config.addresses[i]);
+        }
+
+
+        function checkAll() {
+            if (config.addresses.length === coordinates.length) {
+                return true;
+            }
+            return false;
+        }
+
+        var iii = setInterval(function() {
+            if (checkAll()) {
+                clearInterval(iii);
+                $('#result').text(JSON.stringify(coordinates))
+                // console.log(JSON.stringify(coordinates))
+            }
+        }, 1000);
+    
+    </script>
+</body>
+</html>
